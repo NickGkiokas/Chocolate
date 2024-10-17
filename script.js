@@ -135,7 +135,7 @@ function gameLoop() {
             character.y < obstacle.y + obstacle.height &&
             character.y + character.height > obstacle.y) {
             gameOver = true;
-            alert('Πω χάθαμε... Δεν πειράδει πάμε κθανά!');
+            alert('ΕΧΑΣΕΣ ΠΑΜΕ ΠΑΛΙ');
             resetGame();
             return;
         }
