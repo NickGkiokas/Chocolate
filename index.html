@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Stuck Here!?</title>
     <style>
         body {
@@ -17,9 +17,10 @@
             text-align: center;
             overflow: hidden; /* Disable scrolling */
             user-select: none; /* Prevent text selection */
+            padding: 20px;
         }
         #task {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 20px;
             padding: 0 10px;
         }
@@ -29,6 +30,8 @@
             margin-bottom: 10px;
             border: none;
             border-radius: 5px;
+            width: 200px;
+            text-align: center;
         }
         button {
             padding: 10px 20px;
@@ -38,6 +41,7 @@
             color: white;
             border: none;
             border-radius: 5px;
+            margin-bottom: 20px;
         }
         button:hover {
             background-color: #666;
@@ -45,15 +49,21 @@
         table {
             border-collapse: collapse;
             margin-top: 20px;
+            width: 80%;
+            max-width: 400px;
         }
         td, th {
             border: 1px solid #444;
             padding: 8px;
             text-align: center;
-            width: 150px;
+            width: 50%;
         }
         td {
             background-color: #333;
+            color: white;
+        }
+        th {
+            background-color: #555;
             color: white;
         }
     </style>
@@ -83,6 +93,19 @@
         const taskText = document.getElementById('task');
         const inputLog = document.querySelector('#inputLog tbody');
 
+        // Force Full-Screen Mode (if possible)
+        function goFullScreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        window.onload = goFullScreen;
+
         // Make it harder to close the tab
         window.onbeforeunload = function() {
             if (correctEntries < 10) {
@@ -100,7 +123,7 @@
                 } else {
                     taskText.textContent = "Congratulations! You're free!";
                     prankButton.textContent = "Close this tab";
-                    prankButton.onclick = () => window.close();
+                    prankButton.onclick = attemptClose;
                     prankButton.style.cursor = 'pointer';
                     inputField.disabled = true;
                 }
@@ -122,6 +145,15 @@
             inputLog.appendChild(row);
         }
 
+        // Function to attempt to close the tab
+        function attemptClose() {
+            window.open('', '_self', '');
+            window.close();
+
+            // If it fails, provide a hint
+            alert("If the tab doesn't close, you can manually close it using the browser controls (e.g., Alt + F4 on Windows, Cmd + W on Mac).");
+        }
+
         // Prevent Back Navigation by spamming history states
         setInterval(() => {
             window.history.pushState(null, null, window.location.href);
@@ -133,6 +165,20 @@
                 window.history.pushState(null, null, window.location.href);
             }
         });
+
+        // Disable common keyboard shortcuts and double-tap zoom
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.ctrlKey && e.key === 'w') || (e.altKey && e.key === 'F4')) {
+                e.preventDefault();
+                alert("Nope! You're stuck here until you finish the task!");
+            }
+        });
+
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault(); // Prevents zooming
+            }
+        }, { passive: false });
 
         // Fake attempts to "lock" the window with periodic alerts
         setInterval(() => {
