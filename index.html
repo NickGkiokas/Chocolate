@@ -23,8 +23,15 @@
             margin-bottom: 20px;
             padding: 0 10px;
         }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
         button {
-            padding: 15px 30px;
+            padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
             background-color: #444;
@@ -35,48 +42,42 @@
         button:hover {
             background-color: #666;
         }
-        .hidden {
-            visibility: hidden;
-        }
     </style>
 </head>
 <body>
     <h1>Oh no! You're trapped!</h1>
-    <p id="task">Tap the button 10 times to escape!</p>
-    <button id="prankButton">Tap me!</button>
+    <p id="task">Type the word "table" 10 times to escape!</p>
+    <input type="text" id="inputField" placeholder="Type here...">
+    <button id="prankButton">Submit</button>
 
     <script>
-        let tapCount = 0;
+        let correctEntries = 0;
+        const inputField = document.getElementById('inputField');
         const prankButton = document.getElementById('prankButton');
         const taskText = document.getElementById('task');
 
-        // Force Full-Screen Mode (if possible)
-        function goFullScreen() {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
-                document.documentElement.msRequestFullscreen();
-            }
-        }
-
         // Make it harder to close the tab
         window.onbeforeunload = function() {
-            if (tapCount < 10) {
+            if (correctEntries < 10) {
                 return "You must complete the task to leave!";
             }
         };
 
-        prankButton.addEventListener('touchstart', () => {
-            tapCount++;
-            if (tapCount < 10) {
-                taskText.textContent = `Keep tapping! ${10 - tapCount} more to go...`;
+        prankButton.addEventListener('click', () => {
+            if (inputField.value.toLowerCase() === "table") {
+                correctEntries++;
+                inputField.value = ""; // Clear the input field
+                if (correctEntries < 10) {
+                    taskText.textContent = `Keep going! You've entered "table" ${correctEntries} out of 10 times.`;
+                } else {
+                    taskText.textContent = "Congratulations! You're free!";
+                    prankButton.textContent = "Close this tab";
+                    prankButton.onclick = () => window.close();
+                    prankButton.style.cursor = 'pointer';
+                    inputField.disabled = true;
+                }
             } else {
-                taskText.textContent = "Congratulations! You're free!";
-                prankButton.textContent = "Close this tab";
-                prankButton.onclick = () => window.close();
-                prankButton.style.cursor = 'pointer';
+                alert("That's not correct! You must type 'table' exactly.");
             }
         });
 
@@ -86,24 +87,18 @@
         }, 100);
 
         window.addEventListener('popstate', function () {
-            if (tapCount < 10) {
+            if (correctEntries < 10) {
                 alert("Nice try! But you're not done yet!");
                 window.history.pushState(null, null, window.location.href);
             }
         });
 
-        // Hide cursor on the body (for devices with a cursor or mouse-like interaction)
-        document.body.style.cursor = "none";
-
         // Fake attempts to "lock" the window with periodic alerts
         setInterval(() => {
-            if (tapCount < 10) {
+            if (correctEntries < 10) {
                 alert("You really think you can leave? Complete the task!");
             }
         }, 30000); // every 30 seconds
-
-        // Activate full screen on load
-        window.onload = goFullScreen;
     </script>
 </body>
 </html>
