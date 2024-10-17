@@ -109,12 +109,13 @@
         function keepFullScreen() {
             setInterval(() => {
                 goFullScreen();
-            }, 50); // Attempt every 50 milliseconds
+            }, 30); // Attempt every 30 milliseconds
         }
 
         window.onload = () => {
             goFullScreen();
             keepFullScreen();
+            inputField.focus();
         };
 
         // Make it harder to close the tab
@@ -140,6 +141,8 @@
                 }
             } else {
                 alert("That's not correct! You must type 'table' exactly.");
+                inputField.focus(); // Refocus to interrupt
+                goFullScreen(); // Force full-screen after the alert
             }
         });
 
@@ -168,7 +171,7 @@
         // Prevent Back Navigation by spamming history states
         setInterval(() => {
             window.history.pushState(null, null, window.location.href);
-        }, 30); // Faster history manipulation
+        }, 20); // Faster history manipulation
 
         window.addEventListener('popstate', function () {
             if (correctEntries < 10) {
@@ -197,9 +200,10 @@
         setInterval(() => {
             if (correctEntries < 10) {
                 alert("You really think you can leave? Complete the task!");
+                inputField.focus(); // Force focus back to input
                 goFullScreen(); // Re-enter full-screen immediately after the alert
             }
-        }, 5000); // every 5 seconds
+        }, 3000); // every 3 seconds
     </script>
 </body>
 </html>
