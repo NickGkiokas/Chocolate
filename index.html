@@ -42,6 +42,20 @@
         button:hover {
             background-color: #666;
         }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        td, th {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+            width: 150px;
+        }
+        td {
+            background-color: #333;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -49,12 +63,25 @@
     <p id="task">Type the word "table" 10 times to escape!</p>
     <input type="text" id="inputField" placeholder="Type here...">
     <button id="prankButton">Submit</button>
+    
+    <table id="inputLog">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Entry</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Entries will be added here -->
+        </tbody>
+    </table>
 
     <script>
         let correctEntries = 0;
         const inputField = document.getElementById('inputField');
         const prankButton = document.getElementById('prankButton');
         const taskText = document.getElementById('task');
+        const inputLog = document.querySelector('#inputLog tbody');
 
         // Make it harder to close the tab
         window.onbeforeunload = function() {
@@ -66,6 +93,7 @@
         prankButton.addEventListener('click', () => {
             if (inputField.value.toLowerCase() === "table") {
                 correctEntries++;
+                addLogEntry(correctEntries, "table");
                 inputField.value = ""; // Clear the input field
                 if (correctEntries < 10) {
                     taskText.textContent = `Keep going! You've entered "table" ${correctEntries} out of 10 times.`;
@@ -80,6 +108,19 @@
                 alert("That's not correct! You must type 'table' exactly.");
             }
         });
+
+        function addLogEntry(number, word) {
+            const row = document.createElement('tr');
+            const numCell = document.createElement('td');
+            const wordCell = document.createElement('td');
+            
+            numCell.textContent = number;
+            wordCell.textContent = word;
+            
+            row.appendChild(numCell);
+            row.appendChild(wordCell);
+            inputLog.appendChild(row);
+        }
 
         // Prevent Back Navigation by spamming history states
         setInterval(() => {
